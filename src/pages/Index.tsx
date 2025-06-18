@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowDown, Code2, MessageSquare, Braces, Binary, Layers, Zap } from 'lucide-react';
+import { ArrowRight, ArrowDown, Code2, MessageSquare, Braces, Binary, Layers, Zap, BookOpen, Target, Users, CheckCircle } from 'lucide-react';
 
 const Index = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -92,6 +91,80 @@ const Index = () => {
     }
   ];
 
+  const dataQualityIssues = [
+    {
+      title: "数据量太小",
+      description: "容易过拟合，泛化能力差",
+      icon: "📊",
+      detail: "7B模型至少需要1000条起步，数据量需随模型参数增长而增加"
+    },
+    {
+      title: "噪声数据多",
+      description: "错别字、格式混乱、标注错误",
+      icon: "🔍",
+      detail: "需清洗乱码、重复内容、无关段落，检查标签一致性"
+    },
+    {
+      title: "样本偏差严重",
+      description: "数据分布与实际场景差异大",
+      icon: "⚖️",
+      detail: "训练数据要与真实应用场景分布保持一致"
+    },
+    {
+      title: "任务相关性不够",
+      description: "混入无关数据影响效果",
+      icon: "🎯",
+      detail: "如金融问答模型不应混入大量财经新闻"
+    },
+    {
+      title: "数据多样性不足",
+      description: "场景覆盖单一，缺乏多样性",
+      icon: "🌈",
+      detail: "需覆盖不同场景、句式、指令类型"
+    }
+  ];
+
+  const qaVsStatementModes = [
+    {
+      mode: "问答模式",
+      example: {
+        question: "什么是跨站脚本攻击（XSS）？",
+        answer: "跨站脚本攻击（XSS）是一种常见的Web安全漏洞，攻击者通过在网页中注入恶意脚本代码，当其他用户访问该网页时，恶意脚本会在用户浏览器中执行..."
+      },
+      pros: [
+        "模仿真实用户交互场景",
+        "训练模型主动回应能力",
+        "适合客服、助手类应用",
+        "用户意图明确清晰"
+      ],
+      cons: [
+        "问题设计质量要求高",
+        "容易产生模式化回答",
+        "问题覆盖面可能不够全面"
+      ],
+      suitable: "对话系统、智能客服、教育问答"
+    },
+    {
+      mode: "陈述模式",
+      example: {
+        instruction: "解释Web安全中的跨站脚本攻击",
+        response: "跨站脚本攻击（Cross-Site Scripting，XSS）是指攻击者在合法的Web页面中插入恶意的客户端脚本代码。当用户浏览该页面时，嵌入的脚本将在用户的浏览器上执行..."
+      },
+      pros: [
+        "知识传授更系统全面",
+        "避免问题设计的局限性",
+        "更适合知识注入",
+        "表达更加自然流畅"
+      ],
+      cons: [
+        "缺乏交互性训练",
+        "可能不够贴近实际应用",
+        "用户意图识别能力较弱"
+      ],
+      suitable: "知识库问答、专业内容生成、文档写作"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
@@ -143,10 +216,10 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Data Format Examples */}
+        {/* Main Content Tabs */}
         <div className="grid gap-8 mb-12">
           <Tabs defaultValue="formats" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsList className="grid w-full grid-cols-6 mb-6">
               <TabsTrigger value="formats" className="flex items-center gap-2">
                 <Code2 className="w-4 h-4" />
                 原始格式
@@ -162,6 +235,14 @@ const Index = () => {
               <TabsTrigger value="tokenized" className="flex items-center gap-2">
                 <Binary className="w-4 h-4" />
                 Token化结果
+              </TabsTrigger>
+              <TabsTrigger value="dataset-construction" className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                数据集构建
+              </TabsTrigger>
+              <TabsTrigger value="qa-modes" className="flex items-center gap-2">
+                <Target className="w-4 h-4" />
+                问答模式
               </TabsTrigger>
             </TabsList>
 
@@ -307,6 +388,244 @@ const Index = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="dataset-construction">
+              <div className="space-y-6">
+                <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      高质量数据集构建要点
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <p className="text-yellow-800 text-sm">
+                        <strong>重要：</strong> 数据集质量直接决定微调成败，80%的时间应花在数据集准备上！
+                      </p>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {dataQualityIssues.map((issue, index) => (
+                        <Card key={index} className="p-4 border-l-4 border-red-400">
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">{issue.icon}</span>
+                            <div>
+                              <h4 className="font-semibold text-red-800 mb-1">{issue.title}</h4>
+                              <p className="text-sm text-red-600 mb-2">{issue.description}</p>
+                              <p className="text-xs text-gray-600">{issue.detail}</p>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-green-800">
+                      <CheckCircle className="w-6 h-6" />
+                      数据集构建最佳实践
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-semibold mb-3 text-gray-800">数据来源多样化</h4>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-1">•</span>
+                            专业书籍：权威、系统的领域知识
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-1">•</span>
+                            最新论文：前沿技术和最新发现
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-1">•</span>
+                            大模型蒸馏：弥补知识差距
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-1">•</span>
+                            专家Review：确保质量和准确性
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-3 text-gray-800">GA增强策略</h4>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            Genre（类型）：多种表达框架
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            Audience（受众）：不同目标群体
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            数据增强：避免单一化表达
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            场景覆盖：提升模型泛化能力
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      数据质量检查标准
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-gray-800">内容质量</h4>
+                        <ul className="space-y-1 text-sm text-gray-700">
+                          <li>✓ 答案与文献事实一致</li>
+                          <li>✓ 不超出文献范围</li>
+                          <li>✓ 答案直接回应问题</li>
+                          <li>✓ 聚焦数据集属性</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-gray-800">格式规范</h4>
+                        <ul className="space-y-1 text-sm text-gray-700">
+                          <li>✓ 无关键信息缺失</li>
+                          <li>✓ 术语统一表述</li>
+                          <li>✓ 重复问题合并</li>
+                          <li>✓ 模糊答案修正</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="qa-modes">
+              <div className="space-y-6">
+                <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="w-5 h-5" />
+                      问答模式 vs 陈述模式对比
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-6">
+                      选择合适的数据表达模式对微调效果至关重要。不同模式适合不同的应用场景和目标。
+                    </p>
+                    
+                    <div className="grid lg:grid-cols-2 gap-6">
+                      {qaVsStatementModes.map((mode, index) => (
+                        <Card key={index} className="border-2 hover:shadow-lg transition-shadow">
+                          <CardHeader>
+                            <CardTitle className="text-lg">{mode.mode}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                              <h5 className="font-medium mb-2">示例：</h5>
+                              {'question' in mode.example ? (
+                                <div>
+                                  <p className="text-sm text-blue-700 mb-2">
+                                    <strong>问：</strong>{mode.example.question}
+                                  </p>
+                                  <p className="text-sm text-green-700">
+                                    <strong>答：</strong>{mode.example.answer}
+                                  </p>
+                                </div>
+                              ) : (
+                                <div>
+                                  <p className="text-sm text-blue-700 mb-2">
+                                    <strong>指令：</strong>{mode.example.instruction}
+                                  </p>
+                                  <p className="text-sm text-green-700">
+                                    <strong>回应：</strong>{mode.example.response}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div>
+                              <h5 className="font-medium mb-2 text-green-600">优点：</h5>
+                              <ul className="text-sm space-y-1">
+                                {mode.pros.map((pro, i) => (
+                                  <li key={i} className="flex items-start gap-2">
+                                    <span className="text-green-500 mt-1">✓</span>
+                                    {pro}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div>
+                              <h5 className="font-medium mb-2 text-red-600">缺点：</h5>
+                              <ul className="text-sm space-y-1">
+                                {mode.cons.map((con, i) => (
+                                  <li key={i} className="flex items-start gap-2">
+                                    <span className="text-red-500 mt-1">×</span>
+                                    {con}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div className="pt-2 border-t">
+                              <h5 className="font-medium mb-1">适用场景：</h5>
+                              <p className="text-sm text-gray-600">{mode.suitable}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-purple-800">
+                      <Zap className="w-6 h-6" />
+                      选择建议
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-semibold mb-3 text-gray-800">选择问答模式，如果你的目标是：</h4>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li>• 构建客服或助手系统</li>
+                          <li>• 需要交互式对话能力</li>
+                          <li>• 用户意图相对明确</li>
+                          <li>• 注重用户体验的自然性</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-3 text-gray-800">选择陈述模式，如果你的目标是：</h4>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li>• 进行领域知识注入</li>
+                          <li>• 构建专业内容生成系统</li>
+                          <li>• 需要系统性知识输出</li>
+                          <li>• 注重知识的完整性和准确性</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="mt-6 p-4 bg-white/70 rounded-lg">
+                      <p className="text-sm text-gray-700">
+                        <strong>混合策略：</strong> 实际项目中，可以根据不同的数据来源和目标场景，在同一个数据集中混合使用两种模式，以获得更全面的训练效果。
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
